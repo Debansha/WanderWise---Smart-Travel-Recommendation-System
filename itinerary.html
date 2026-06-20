@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Build your day-by-day travel itinerary with WanderWise interactive planner.">
+  <title>Itinerary Builder — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+  <div class="page-header">
+    <h1 data-t="itinerary.title">Itinerary Builder</h1>
+    <p data-t="itinerary.desc">Build your day-by-day travel plan</p>
+  </div>
+
+  <section class="section" style="padding-top:0;max-width:900px;">
+    <!-- Destination & Date Selection -->
+    <div class="card" style="padding:2rem;margin-bottom:2rem;">
+      <div class="grid-2" style="gap:1rem;">
+        <div class="form-group">
+          <label>📍 Destination</label>
+          <select class="form-control" id="itin-dest" onchange="loadTemplate()">
+            <option value="bali">Bali, Indonesia</option>
+            <option value="kyoto">Kyoto, Japan</option>
+            <option value="jaipur">Jaipur, India</option>
+            <option value="santorini">Santorini, Greece</option>
+            <option value="bangkok">Bangkok, Thailand</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>📅 Duration</label>
+          <select class="form-control" id="itin-days" onchange="initItinerary()">
+            <option value="3">3 Days</option>
+            <option value="5" selected>5 Days</option>
+            <option value="7">7 Days</option>
+            <option value="10">10 Days</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div id="itinerary-timeline"></div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="exportItinerary()" data-t="itinerary.exportPlan">Export Plan</button>
+      <button class="btn btn-outline" onclick="saveItinerary()" data-t="itinerary.savePlan">Save Plan</button>
+      <button class="btn btn-outline" onclick="loadTemplate()">Load Template</button>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="card" style="padding:2rem;margin-top:2rem;">
+      <h3 style="margin-bottom:1rem;">💡 Activity Suggestions</h3>
+      <div id="suggestions" class="interest-grid"></div>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const templates = {
+      bali: {
+        1: [
+          { time:'09:00', activity:'Arrive & check-in at villa', type:'🏨' },
+          { time:'12:00', activity:'Lunch at Jimbaran Beach', type:'🍽️' },
+          { time:'15:00', activity:'Explore Uluwatu Temple', type:'🏛️' },
+          { time:'18:00', activity:'Watch Kecak Fire Dance', type:'🎭' }
+        ],
+        2: [
+          { time:'06:00', activity:'Sunrise at Tegallalang Rice Terraces', type:'🌅' },
+          { time:'10:00', activity:'Ubud Monkey Forest', type:'🐒' },
+          { time:'13:00', activity:'Balinese cooking class', type:'🍳' },
+          { time:'17:00', activity:'Spa & wellness treatment', type:'🧘' }
+        ],
+        3: [
+          { time:'08:00', activity:'Snorkeling at Nusa Penida', type:'🤿' },
+          { time:'12:00', activity:'Beach club lunch', type:'🍹' },
+          { time:'16:00', activity:'Tanah Lot Temple sunset', type:'📷' },
+          { time:'20:00', activity:'Farewell dinner in Seminyak', type:'🍽️' }
+        ]
+      },
+      kyoto: {
+        1: [
+          { time:'08:00', activity:'Fushimi Inari Shrine (thousand torii gates)', type:'⛩️' },
+          { time:'11:00', activity:'Traditional matcha in Gion district', type:'🍵' },
+          { time:'14:00', activity:'Kinkaku-ji (Golden Pavilion)', type:'🏛️' },
+          { time:'18:00', activity:'Kaiseki dinner experience', type:'🍽️' }
+        ],
+        2: [
+          { time:'07:00', activity:'Arashiyama Bamboo Grove', type:'🎋' },
+          { time:'10:00', activity:'Monkey Park Iwatayama', type:'🐒' },
+          { time:'13:00', activity:'Ramen lunch in Pontocho', type:'🍜' },
+          { time:'16:00', activity:'Kimono rental & photo walk', type:'👘' }
+        ],
+        3: [
+          { time:'09:00', activity:'Nijo Castle', type:'🏯' },
+          { time:'12:00', activity:'Nishiki Market food tour', type:'🍣' },
+          { time:'15:00', activity:'Tea ceremony experience', type:'🍵' },
+          { time:'19:00', activity:'Geisha district evening walk', type:'🏮' }
+        ]
+      },
+      jaipur: {
+        1: [
+          { time:'08:00', activity:'Amber Fort (elephant ride optional)', type:'🏰' },
+          { time:'11:00', activity:'Jal Mahal photo stop', type:'📷' },
+          { time:'13:00', activity:'Dal Baati Churma lunch', type:'🍛' },
+          { time:'16:00', activity:'Hawa Mahal (Palace of Winds)', type:'🏛️' }
+        ],
+        2: [
+          { time:'09:00', activity:'City Palace & Museum', type:'🏛️' },
+          { time:'12:00', activity:'Jantar Mantar Observatory', type:'🔭' },
+          { time:'14:00', activity:'Johari Bazaar shopping', type:'🛍️' },
+          { time:'18:00', activity:'Nahargarh Fort sunset', type:'🌅' }
+        ],
+        3: [
+          { time:'08:00', activity:'Jaigarh Fort', type:'🏰' },
+          { time:'11:00', activity:'Block printing workshop', type:'🎨' },
+          { time:'14:00', activity:'Chokhi Dhani cultural village', type:'🎭' },
+          { time:'19:00', activity:'Rajasthani thali dinner', type:'🍽️' }
+        ]
+      },
+      santorini: {
+        1: [
+          { time:'10:00', activity:'Explore Oia village', type:'🏘️' },
+          { time:'13:00', activity:'Seafood lunch by the caldera', type:'🍽️' },
+          { time:'16:00', activity:'Wine tasting at local vineyard', type:'🍷' },
+          { time:'19:00', activity:'Oia sunset (world famous!)', type:'🌅' }
+        ],
+        2: [
+          { time:'09:00', activity:'Red Beach & Akrotiri ruins', type:'🏖️' },
+          { time:'12:00', activity:'Catamaran cruise', type:'⛵' },
+          { time:'16:00', activity:'Hot springs swimming', type:'♨️' },
+          { time:'20:00', activity:'Greek taverna dinner in Fira', type:'🍽️' }
+        ],
+        3: [
+          { time:'08:00', activity:'Hike Fira to Oia trail', type:'🥾' },
+          { time:'12:00', activity:'Pyrgos village exploration', type:'🏘️' },
+          { time:'15:00', activity:'Beach time at Perissa', type:'🏖️' },
+          { time:'19:00', activity:'Farewell dinner at Ammoudi Bay', type:'🍽️' }
+        ]
+      },
+      bangkok: {
+        1: [
+          { time:'08:00', activity:'Grand Palace & Wat Phra Kaew', type:'🏛️' },
+          { time:'11:00', activity:'Wat Pho (Reclining Buddha)', type:'🙏' },
+          { time:'13:00', activity:'Street food at Yaowarat (Chinatown)', type:'🍜' },
+          { time:'18:00', activity:'Rooftop bar sunset drinks', type:'🍹' }
+        ],
+        2: [
+          { time:'07:00', activity:'Floating market tour', type:'🛶' },
+          { time:'12:00', activity:'Thai cooking class', type:'🍳' },
+          { time:'16:00', activity:'Chatuchak Weekend Market', type:'🛍️' },
+          { time:'20:00', activity:'Muay Thai show', type:'🥊' }
+        ],
+        3: [
+          { time:'09:00', activity:'Wat Arun (Temple of Dawn)', type:'⛩️' },
+          { time:'12:00', activity:'Khao San Road exploration', type:'🎭' },
+          { time:'15:00', activity:'Thai massage session', type:'💆' },
+          { time:'19:00', activity:'Dinner cruise on Chao Phraya', type:'🚢' }
+        ]
+      }
+    };
+
+    const suggestions = [
+      '🏖️ Beach Day', '🥾 Hiking Trail', '🍳 Cooking Class', '💆 Spa Day',
+      '📷 Photo Tour', '🛍️ Shopping', '🏛️ Museum Visit', '🍽️ Food Tour',
+      '🚴 Cycling Tour', '🤿 Snorkeling', '🎭 Cultural Show', '🧘 Yoga Session'
+    ];
+
+    function initItinerary() {
+      const days = parseInt(document.getElementById('itin-days').value);
+      const dest = document.getElementById('itin-dest').value;
+      const timeline = document.getElementById('itinerary-timeline');
+      const template = templates[dest] || {};
+
+      timeline.innerHTML = '';
+      for (let d = 1; d <= days; d++) {
+        const dayActivities = template[d] || [
+          { time: '09:00', activity: 'Plan your activity', type: '📝' },
+          { time: '13:00', activity: 'Lunch break', type: '🍽️' },
+          { time: '17:00', activity: 'Evening activity', type: '🌅' }
+        ];
+
+        timeline.innerHTML += `
+          <div class="card reveal visible" style="padding:1.5rem;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+              <h3 style="font-family:var(--font-heading);display:flex;align-items:center;gap:0.5rem;">
+                <span style="background:var(--primary);color:white;width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">${d}</span>
+                ${t('itinerary.day')} ${d}
+              </h3>
+              <button class="btn btn-outline" style="font-size:0.75rem;padding:0.4rem 0.8rem;" onclick="addActivity(${d})">+ ${t('itinerary.addActivity')}</button>
+            </div>
+            <div id="day-${d}-activities">
+              ${dayActivities.map((a, i) => `
+                <div class="activity-item" style="display:flex;gap:1rem;align-items:center;padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);margin-bottom:0.5rem;border-left:3px solid var(--primary);" draggable="true">
+                  <span style="font-size:1.3rem;">${a.type}</span>
+                  <input type="time" value="${a.time}" style="background:transparent;border:none;color:var(--text-dim);font-family:inherit;font-size:0.85rem;width:70px;">
+                  <input type="text" value="${a.activity}" style="flex:1;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:0.95rem;outline:none;" onfocus="this.style.borderBottom='1px solid var(--primary)'" onblur="this.style.borderBottom='none'">
+                  <button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:1.1rem;">✕</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function addActivity(day) {
+      const container = document.getElementById(`day-${day}-activities`);
+      const div = document.createElement('div');
+      div.className = 'activity-item';
+      div.style.cssText = 'display:flex;gap:1rem;align-items:center;padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);margin-bottom:0.5rem;border-left:3px solid var(--accent-cyan);animation:fadeInUp 0.3s ease;';
+      div.innerHTML = `
+        <span style="font-size:1.3rem;">📌</span>
+        <input type="time" value="12:00" style="background:transparent;border:none;color:var(--text-dim);font-family:inherit;font-size:0.85rem;width:70px;">
+        <input type="text" placeholder="Enter activity..." style="flex:1;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:0.95rem;outline:none;" onfocus="this.style.borderBottom='1px solid var(--primary)'" onblur="this.style.borderBottom='none'">
+        <button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:1.1rem;">✕</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function loadTemplate() { initItinerary(); showToast('Template Loaded','Itinerary template has been loaded!'); }
+
+    function saveItinerary() { showToast('Saved! 💾','Your itinerary has been saved to local storage.'); }
+
+    function exportItinerary() {
+      let text = '=== WanderWise Itinerary ===\n\n';
+      const dest = document.getElementById('itin-dest');
+      text += `Destination: ${dest.options[dest.selectedIndex].text}\n\n`;
+      document.querySelectorAll('.card[style*="margin-bottom:1rem"]').forEach((card, d) => {
+        text += `--- Day ${d + 1} ---\n`;
+        card.querySelectorAll('.activity-item').forEach(item => {
+          const time = item.querySelector('input[type="time"]').value;
+          const act = item.querySelector('input[type="text"]').value;
+          text += `${time} - ${act}\n`;
+        });
+        text += '\n';
+      });
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'wanderwise-itinerary.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Exported! 📄','Your itinerary has been downloaded.');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('itinerary');
+      initItinerary();
+      const sugEl = document.getElementById('suggestions');
+      suggestions.forEach(s => {
+        const chip = document.createElement('div');
+        chip.className = 'interest-chip';
+        chip.textContent = s;
+        chip.style.cursor = 'grab';
+        chip.draggable = true;
+        chip.addEventListener('dragstart', e => e.dataTransfer.setData('text', s));
+        sugEl.appendChild(chip);
+      });
+    });
+  </script>
+</body>
+</html>

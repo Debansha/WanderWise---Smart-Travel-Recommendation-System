@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plan your dream trip based on interests, budget, and weather preferences with WanderWise AI Trip Planner.">
+  <title>Trip Planner — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="page-header">
+    <h1 data-t="planner.title">Plan Your Dream Trip</h1>
+    <p data-t="planner.desc">Tell us what you love and we'll create a personalized travel plan</p>
+  </div>
+
+  <section class="section" style="padding-top:0;max-width:800px;">
+    <!-- Progress -->
+    <div class="wizard-progress">
+      <div class="wizard-step-dot active" data-step="1"></div>
+      <div class="wizard-step-dot" data-step="2"></div>
+      <div class="wizard-step-dot" data-step="3"></div>
+      <div class="wizard-step-dot" data-step="4"></div>
+    </div>
+
+    <!-- Step 1: Interests -->
+    <div class="wizard-panel active" id="step1">
+      <h2 class="text-center mb-3" data-t="planner.step1">Select Your Interests</h2>
+      <div class="interest-grid" id="interest-grid"></div>
+      <div class="text-center mt-3">
+        <button class="btn btn-primary" onclick="goStep(2)" data-t="planner.next">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Budget -->
+    <div class="wizard-panel" id="step2">
+      <h2 class="text-center mb-3" data-t="planner.step2">Set Your Budget</h2>
+      <div class="card" style="padding:2.5rem;text-align:center;">
+        <div class="range-value" id="budget-display">$1000</div>
+        <p class="text-dim mb-2" data-t="planner.budgetLabel">Budget per person (USD)</p>
+        <div class="range-slider">
+          <input type="range" id="budget-range" min="200" max="5000" step="100" value="1000" oninput="document.getElementById('budget-display').textContent='$'+this.value; this.style.background='linear-gradient(to right,var(--primary) '+((this.value-200)/4800*100)+'%,var(--glass) '+((this.value-200)/4800*100)+'%)'">
+        </div>
+        <div style="display:flex;justify-content:space-between;color:var(--text-dim);font-size:0.8rem;">
+          <span>$200</span><span>$5000</span>
+        </div>
+      </div>
+      <div class="text-center mt-3" style="display:flex;gap:1rem;justify-content:center;">
+        <button class="btn btn-outline" onclick="goStep(1)" data-t="planner.prev">← Previous</button>
+        <button class="btn btn-primary" onclick="goStep(3)" data-t="planner.next">Next Step →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Weather -->
+    <div class="wizard-panel" id="step3">
+      <h2 class="text-center mb-3" data-t="planner.step3">Weather Preference</h2>
+      <div class="grid-2" id="weather-options">
+        <div class="card weather-opt" data-weather="tropical" onclick="selectWeather(this)" style="cursor:pointer;text-align:center;padding:2rem;">
+          <div style="font-size:3rem;">☀️</div>
+          <h3 data-t="planner.weatherOptions.tropical">Tropical & Warm</h3>
+        </div>
+        <div class="card weather-opt" data-weather="mild" onclick="selectWeather(this)" style="cursor:pointer;text-align:center;padding:2rem;">
+          <div style="font-size:3rem;">🌤️</div>
+          <h3 data-t="planner.weatherOptions.mild">Mild & Pleasant</h3>
+        </div>
+        <div class="card weather-opt" data-weather="cold" onclick="selectWeather(this)" style="cursor:pointer;text-align:center;padding:2rem;">
+          <div style="font-size:3rem;">❄️</div>
+          <h3 data-t="planner.weatherOptions.cold">Cold & Snowy</h3>
+        </div>
+        <div class="card weather-opt" data-weather="any" onclick="selectWeather(this)" style="cursor:pointer;text-align:center;padding:2rem;">
+          <div style="font-size:3rem;">🌈</div>
+          <h3 data-t="planner.weatherOptions.any">Any Weather</h3>
+        </div>
+      </div>
+      <div class="text-center mt-3" style="display:flex;gap:1rem;justify-content:center;">
+        <button class="btn btn-outline" onclick="goStep(2)" data-t="planner.prev">← Previous</button>
+        <button class="btn btn-primary" onclick="generateResults()" data-t="planner.getResults">Get Recommendations ✨</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Results -->
+    <div class="wizard-panel" id="step4">
+      <h2 class="text-center mb-3" data-t="planner.step4">Your Recommendations</h2>
+      <div id="results-container"></div>
+      <div class="text-center mt-3">
+        <button class="btn btn-outline" onclick="goStep(1); resetWizard();" data-t="planner.startOver">Start Over</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let selectedInterests = [];
+    let selectedWeather = 'any';
+
+    const interestKeys = ['beach','mountain','city','culture','adventure','food','wildlife','history','nightlife','wellness'];
+
+    const recDB = [
+      { name:'Bali, Indonesia', nameHi:'बाली, इंडोनेशिया', interests:['beach','culture','food','wellness'], weather:'tropical', minBudget:600, maxBudget:1500, score:0, img:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&h=250&fit=crop' },
+      { name:'Santorini, Greece', nameHi:'सेंटोरिनी, ग्रीस', interests:['beach','food','nightlife','city'], weather:'mild', minBudget:1000, maxBudget:3000, score:0, img:'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=400&h=250&fit=crop' },
+      { name:'Kyoto, Japan', nameHi:'क्योटो, जापान', interests:['culture','history','food','wellness'], weather:'mild', minBudget:800, maxBudget:2000, score:0, img:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=250&fit=crop' },
+      { name:'Jaipur, India', nameHi:'जयपुर, भारत', interests:['culture','history','food','city'], weather:'mild', minBudget:200, maxBudget:800, score:0, img:'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=400&h=250&fit=crop' },
+      { name:'Swiss Alps', nameHi:'स्विस आल्प्स', interests:['mountain','adventure','wildlife'], weather:'cold', minBudget:1200, maxBudget:4000, score:0, img:'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=400&h=250&fit=crop' },
+      { name:'Maldives', nameHi:'मालदीव', interests:['beach','wellness','wildlife'], weather:'tropical', minBudget:1500, maxBudget:5000, score:0, img:'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&h=250&fit=crop' },
+      { name:'Machu Picchu, Peru', nameHi:'माचू पिच्चू, पेरू', interests:['adventure','history','mountain','culture'], weather:'mild', minBudget:700, maxBudget:2000, score:0, img:'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=400&h=250&fit=crop' },
+      { name:'Varanasi, India', nameHi:'वाराणसी, भारत', interests:['culture','history','food','wellness'], weather:'mild', minBudget:200, maxBudget:600, score:0, img:'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400&h=250&fit=crop' },
+      { name:'Reykjavik, Iceland', nameHi:'रेक्जाविक, आइसलैंड', interests:['adventure','mountain','wildlife'], weather:'cold', minBudget:1000, maxBudget:3000, score:0, img:'https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=400&h=250&fit=crop' },
+      { name:'Bangkok, Thailand', nameHi:'बैंकॉक, थाईलैंड', interests:['food','city','nightlife','culture','beach'], weather:'tropical', minBudget:400, maxBudget:1200, score:0, img:'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=250&fit=crop' },
+      { name:'Serengeti, Tanzania', nameHi:'सेरेंगेटी, तंज़ानिया', interests:['wildlife','adventure','mountain'], weather:'tropical', minBudget:1000, maxBudget:3500, score:0, img:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&h=250&fit=crop' },
+      { name:'New York, USA', nameHi:'न्यूयॉर्क, अमेरिका', interests:['city','food','nightlife','culture','history'], weather:'mild', minBudget:1000, maxBudget:4000, score:0, img:'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=250&fit=crop' }
+    ];
+
+    function goStep(n) {
+      document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      document.querySelectorAll('.wizard-step-dot').forEach((d, i) => {
+        d.classList.remove('active', 'completed');
+        if (i + 1 < n) d.classList.add('completed');
+        if (i + 1 === n) d.classList.add('active');
+      });
+    }
+
+    function selectWeather(el) {
+      document.querySelectorAll('.weather-opt').forEach(o => o.style.borderColor = 'var(--glass-border)');
+      el.style.borderColor = 'var(--primary)';
+      el.style.boxShadow = '0 0 20px var(--primary-glow)';
+      selectedWeather = el.dataset.weather;
+    }
+
+    function generateResults() {
+      const budget = parseInt(document.getElementById('budget-range').value);
+      const lang = document.documentElement.getAttribute('data-lang') || 'en';
+      const scored = recDB.map(d => {
+        let score = 0;
+        const matchedInterests = d.interests.filter(i => selectedInterests.includes(i));
+        score += matchedInterests.length * 25;
+        if (selectedWeather === 'any' || d.weather === selectedWeather) score += 20;
+        if (budget >= d.minBudget && budget <= d.maxBudget) score += 15;
+        else if (budget >= d.minBudget) score += 5;
+        return { ...d, score: Math.min(score, 100) };
+      }).filter(d => d.score > 0).sort((a, b) => b.score - a.score).slice(0, 5);
+
+      const container = document.getElementById('results-container');
+      if (scored.length === 0) {
+        container.innerHTML = '<div class="card text-center" style="padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">🔍</div><p>No perfect matches found. Try adjusting your preferences!</p></div>';
+      } else {
+        container.innerHTML = scored.map((d, i) => `
+          <div class="card reveal visible" style="display:flex;gap:1.5rem;margin-bottom:1rem;padding:1rem;align-items:center;flex-wrap:wrap;">
+            <img src="${d.img}" alt="${d.name}" style="width:160px;height:110px;object-fit:cover;border-radius:var(--radius-sm);flex-shrink:0;">
+            <div style="flex:1;min-width:200px;">
+              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;">
+                <span style="font-size:1.2rem;font-weight:700;">#${i + 1}</span>
+                <h3 style="font-family:var(--font-heading);font-weight:700;">${lang === 'hi' ? d.nameHi : d.name}</h3>
+              </div>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+                ${d.interests.filter(i => selectedInterests.includes(i)).map(i => `<span class="tag">${i}</span>`).join('')}
+              </div>
+              <div style="display:flex;align-items:center;gap:1rem;">
+                <div>
+                  <span class="text-dim" style="font-size:0.8rem;">${t('planner.matchScore')}</span>
+                  <div style="font-weight:800;color:${d.score >= 70 ? 'var(--accent-emerald)' : d.score >= 40 ? 'var(--accent-gold)' : 'var(--primary)'};">${d.score}%</div>
+                </div>
+                <div style="flex:1;height:8px;background:var(--glass);border-radius:4px;overflow:hidden;">
+                  <div style="width:${d.score}%;height:100%;background:${d.score >= 70 ? 'var(--accent-emerald)' : d.score >= 40 ? 'var(--accent-gold)' : 'var(--primary)'};border-radius:4px;transition:width 1s ease;"></div>
+                </div>
+              </div>
+            </div>
+            <a href="itinerary.html" class="btn btn-primary" style="font-size:0.85rem;padding:0.6rem 1.2rem;" data-t="planner.planTrip">${t('planner.planTrip')}</a>
+          </div>
+        `).join('');
+      }
+      goStep(4);
+    }
+
+    function resetWizard() {
+      selectedInterests = [];
+      selectedWeather = 'any';
+      document.querySelectorAll('.interest-chip').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.weather-opt').forEach(o => { o.style.borderColor = ''; o.style.boxShadow = ''; });
+      document.getElementById('budget-range').value = 1000;
+      document.getElementById('budget-display').textContent = '$1000';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('planner');
+      const grid = document.getElementById('interest-grid');
+      interestKeys.forEach(key => {
+        const chip = document.createElement('div');
+        chip.className = 'interest-chip';
+        chip.dataset.interest = key;
+        chip.setAttribute('data-t', `planner.interests.${key}`);
+        chip.textContent = t(`planner.interests.${key}`);
+        chip.addEventListener('click', () => {
+          chip.classList.toggle('selected');
+          if (chip.classList.contains('selected')) selectedInterests.push(key);
+          else selectedInterests = selectedInterests.filter(i => i !== key);
+        });
+        grid.appendChild(chip);
+      });
+    });
+  </script>
+</body>
+</html>

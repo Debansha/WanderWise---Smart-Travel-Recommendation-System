@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WanderWise - AI-Powered Travel Planning Platform. Plan your dream vacation based on interests, budget, weather and local culture.">
+  <title>WanderWise — Your AI Travel Assistant</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <canvas id="particles-canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge" data-t="home.badge">✨ AI-Powered Travel Planning</div>
+      <h1>
+        <span data-t="home.heroTitle1">Discover Your</span><br>
+        <span class="gradient-text" data-t="home.heroTitle2">Dream Destination</span>
+      </h1>
+      <p data-t="home.heroDesc">Plan your perfect vacation with personalized recommendations based on your interests, budget, weather preferences, and local culture.</p>
+      <div class="hero-buttons">
+        <a href="planner.html" class="btn btn-primary" data-t="home.startPlanning">Start Planning</a>
+        <a href="destinations.html" class="btn btn-outline" data-t="home.explore">Explore Destinations</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED DESTINATIONS -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-label" data-t="home.featuredLabel">POPULAR DESTINATIONS</span>
+      <h2 data-t="home.featuredTitle">Trending Places to Visit</h2>
+      <p data-t="home.featuredDesc">Handpicked destinations that travelers love around the world</p>
+    </div>
+    <div class="grid-3" id="featured-dest"></div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-label" data-t="home.whyLabel">WHY CHOOSE US</span>
+      <h2 data-t="home.whyTitle">Your Perfect Trip, Simplified</h2>
+    </div>
+    <div class="grid-4" id="features-grid">
+      <div class="card" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">🤖</div>
+        <h3 data-t="home.feature1Title">Smart Recommendations</h3>
+        <p class="text-dim mt-1" data-t="home.feature1Desc">AI-powered suggestions tailored to your unique travel preferences</p>
+      </div>
+      <div class="card" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">💰</div>
+        <h3 data-t="home.feature2Title">Budget Optimizer</h3>
+        <p class="text-dim mt-1" data-t="home.feature2Desc">Get the most out of every rupee with our intelligent budget planner</p>
+      </div>
+      <div class="card" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">🌦️</div>
+        <h3 data-t="home.feature3Title">Weather Insights</h3>
+        <p class="text-dim mt-1" data-t="home.feature3Desc">Real-time weather data to help you pick the perfect travel dates</p>
+      </div>
+      <div class="card" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">🎭</div>
+        <h3 data-t="home.feature4Title">Local Culture</h3>
+        <p class="text-dim mt-1" data-t="home.feature4Desc">Deep dive into local customs, cuisine, and hidden gems</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="section">
+    <div class="stats reveal">
+      <div class="stat-item">
+        <div class="stat-number" data-count="500" data-suffix="+">0</div>
+        <div class="stat-label" data-t="home.statsDestinations">Destinations</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="50000" data-suffix="+">0</div>
+        <div class="stat-label" data-t="home.statsHappyTravelers">Happy Travelers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="85" data-suffix="">0</div>
+        <div class="stat-label" data-t="home.statsCountries">Countries</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-count="24" data-suffix="/7">0</div>
+        <div class="stat-label" data-t="home.statsSupport">24/7 Support</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-label" data-t="home.testimonialsLabel">TESTIMONIALS</span>
+      <h2 data-t="home.testimonialsTitle">What Travelers Say</h2>
+    </div>
+    <div class="slider-container">
+      <div class="slider-track" id="testimonial-track"></div>
+      <div class="slider-controls">
+        <button class="slider-btn" id="test-prev">←</button>
+        <button class="slider-btn" id="test-next">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section reveal">
+    <div class="newsletter">
+      <h3 data-t="home.newsletterTitle">Get Travel Inspiration</h3>
+      <p data-t="home.newsletterDesc">Subscribe for exclusive deals and destination guides</p>
+      <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!','You will receive travel updates soon.'); this.reset();">
+        <input type="email" data-t="home.emailPlaceholder" placeholder="Enter your email" required>
+        <button type="submit" data-t="home.subscribe">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('home');
+      initParticles('particles-canvas');
+
+      // Featured destinations data
+      const destinations = [
+        { name: 'Bali, Indonesia', nameHi: 'बाली, इंडोनेशिया', badge: 'Trending', img: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&h=400&fit=crop', price: '$800' },
+        { name: 'Santorini, Greece', nameHi: 'सेंटोरिनी, ग्रीस', badge: 'Popular', img: 'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=600&h=400&fit=crop', price: '$1200' },
+        { name: 'Kyoto, Japan', nameHi: 'क्योटो, जापान', badge: 'Cultural', img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&h=400&fit=crop', price: '$1000' },
+        { name: 'Jaipur, India', nameHi: 'जयपुर, भारत', badge: 'Heritage', img: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600&h=400&fit=crop', price: '$400' },
+        { name: 'Swiss Alps', nameHi: 'स्विस आल्प्स', badge: 'Adventure', img: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&h=400&fit=crop', price: '$1500' },
+        { name: 'Maldives', nameHi: 'मालदीव', badge: 'Luxury', img: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&h=400&fit=crop', price: '$2000' }
+      ];
+
+      const grid = document.getElementById('featured-dest');
+      destinations.forEach(d => {
+        grid.innerHTML += `
+          <div class="dest-card">
+            <img src="${d.img}" alt="${d.name}" loading="lazy">
+            <div class="dest-card-badge">${d.badge}</div>
+            <div class="dest-card-overlay">
+              <h3>${currentLang === 'hi' ? d.nameHi : d.name}</h3>
+              <p>From ${d.price} per person</p>
+            </div>
+          </div>`;
+      });
+
+      // Testimonials
+      const testimonials = [
+        { text: "WanderWise made our honeymoon planning effortless! The budget calculator saved us thousands.", textHi: "WanderWise ने हमारे हनीमून की योजना बनाना आसान बना दिया! बजट कैलकुलेटर ने हमें हज़ारों बचाए।", name: "Priya & Rahul", role: "Honeymooners" },
+        { text: "Best travel platform ever! The weather insights helped us pick the perfect time to visit Japan.", textHi: "अब तक का सबसे अच्छा ट्रैवल प्लेटफॉर्म! मौसम की जानकारी ने जापान जाने का सही समय चुनने में मदद की।", name: "Sarah M.", role: "Solo Traveler" },
+        { text: "The culture guide was incredibly helpful. We felt prepared and respectful at every destination.", textHi: "संस्कृति गाइड अविश्वसनीय रूप से सहायक था। हर गंतव्य पर हम तैयार और सम्मानजनक महसूस करते थे।", name: "David & Lisa", role: "Family Travelers" },
+        { text: "I use WanderWise for every trip. The itinerary builder is a game changer!", textHi: "मैं हर यात्रा के लिए WanderWise का उपयोग करता हूं। कार्यक्रम निर्माता शानदार है!", name: "Amit K.", role: "Digital Nomad" }
+      ];
+
+      const track = document.getElementById('testimonial-track');
+      testimonials.forEach(te => {
+        track.innerHTML += `
+          <div class="testimonial-card" style="min-width:350px;margin:0 0.75rem;flex-shrink:0;">
+            <div class="quote-icon">❝</div>
+            <p>${currentLang === 'hi' ? te.textHi : te.text}</p>
+            <div class="testimonial-author">
+              <div style="width:45px;height:45px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent-cyan));display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">${te.name[0]}</div>
+              <div><div class="name">${te.name}</div><div class="role">${te.role}</div></div>
+            </div>
+          </div>`;
+      });
+      initSlider('#testimonial-track', '#test-prev', '#test-next', 380);
+
+      // Stats counter on scroll
+      const statsObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.querySelectorAll('.stat-number').forEach(el => {
+              animateCounter(el, parseInt(el.dataset.count), 2000);
+            });
+            statsObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      const statsEl = document.querySelector('.stats');
+      if (statsEl) statsObs.observe(statsEl);
+    });
+  </script>
+</body>
+</html>

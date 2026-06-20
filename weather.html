@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Weather dashboard for travel destinations. Check conditions and best seasons to visit.">
+  <title>Weather Dashboard — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+  <div class="page-header">
+    <h1 data-t="weather.title">Weather Dashboard</h1>
+    <p data-t="weather.desc">Check weather conditions for your dream destinations</p>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <!-- Season Filter -->
+    <div class="filter-pills" style="margin-bottom:2rem;">
+      <button class="pill active" data-season="all">All Seasons</button>
+      <button class="pill" data-season="spring" data-t="weather.spring">Spring</button>
+      <button class="pill" data-season="summer" data-t="weather.summer">Summer</button>
+      <button class="pill" data-season="autumn" data-t="weather.autumn">Autumn</button>
+      <button class="pill" data-season="winter" data-t="weather.winter">Winter</button>
+    </div>
+
+    <div class="grid-3" id="weather-grid"></div>
+
+    <!-- Monthly Chart -->
+    <div class="card reveal" style="padding:2rem;margin-top:2rem;">
+      <h3 style="margin-bottom:1.5rem;">📊 Monthly Temperature Guide</h3>
+      <div style="display:flex;gap:0.3rem;align-items:flex-end;height:200px;padding:0 1rem;">
+        <div id="temp-bars" style="display:flex;gap:0.4rem;align-items:flex-end;width:100%;height:100%;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-around;margin-top:0.5rem;font-size:0.7rem;color:var(--text-dim);" id="month-labels"></div>
+      <div class="filter-pills" style="margin-top:1rem;" id="city-pills"></div>
+    </div>
+
+    <!-- Best Season Recommendations -->
+    <div class="reveal" style="margin-top:2rem;">
+      <h3 style="margin-bottom:1.5rem;" data-t="weather.bestSeason">Best Season to Visit</h3>
+      <div class="grid-2" id="season-recs"></div>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const weatherData = [
+      { city:'Bali', cityHi:'बाली', country:'Indonesia', icon:'🌴', temp:28, humidity:75, wind:12, condition:'Tropical', condHi:'उष्णकटिबंधीय', best:'spring', temps:[27,27,28,28,28,27,26,27,27,28,28,27] },
+      { city:'Santorini', cityHi:'सेंटोरिनी', country:'Greece', icon:'☀️', temp:24, humidity:55, wind:18, condition:'Sunny', condHi:'धूप', best:'summer', temps:[12,12,14,17,21,25,28,28,25,21,17,13] },
+      { city:'Kyoto', cityHi:'क्योटो', country:'Japan', icon:'🌸', temp:18, humidity:65, wind:10, condition:'Mild', condHi:'हल्का', best:'spring', temps:[5,6,10,16,21,24,28,29,25,19,13,7] },
+      { city:'Jaipur', cityHi:'जयपुर', country:'India', icon:'🏜️', temp:30, humidity:40, wind:14, condition:'Hot & Dry', condHi:'गर्म और शुष्क', best:'winter', temps:[15,18,24,30,35,36,32,30,31,28,22,16] },
+      { city:'Swiss Alps', cityHi:'स्विस आल्प्स', country:'Switzerland', icon:'🏔️', temp:8, humidity:70, wind:20, condition:'Alpine', condHi:'अल्पाइन', best:'summer', temps:[-2,-1,3,7,12,16,18,17,14,9,3,-1] },
+      { city:'Maldives', cityHi:'मालदीव', country:'Maldives', icon:'🏝️', temp:29, humidity:80, wind:8, condition:'Warm', condHi:'गर्म', best:'winter', temps:[28,29,29,30,29,28,28,28,28,28,28,28] },
+      { city:'Reykjavik', cityHi:'रेक्जाविक', country:'Iceland', icon:'🌨️', temp:4, humidity:78, wind:30, condition:'Cold', condHi:'ठंडा', best:'summer', temps:[-1,0,1,4,8,11,13,12,9,5,2,0] },
+      { city:'Bangkok', cityHi:'बैंकॉक', country:'Thailand', icon:'🌺', temp:32, humidity:70, wind:9, condition:'Hot', condHi:'गर्म', best:'winter', temps:[28,29,31,33,33,32,31,31,31,30,29,27] },
+      { city:'Cape Town', cityHi:'केप टाउन', country:'South Africa', icon:'🌊', temp:22, humidity:60, wind:22, condition:'Mediterranean', condHi:'भूमध्यसागरीय', best:'summer', temps:[26,26,24,21,18,16,15,16,17,20,22,24] }
+    ];
+
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    let selectedCity = 0;
+
+    function renderWeather(filter = 'all') {
+      const grid = document.getElementById('weather-grid');
+      const lang = document.documentElement.getAttribute('data-lang') || 'en';
+      const filtered = filter === 'all' ? weatherData : weatherData.filter(w => w.best === filter);
+      grid.innerHTML = filtered.map((w, i) => `
+        <div class="weather-card reveal visible" style="cursor:pointer;" onclick="showCityChart(${weatherData.indexOf(w)})">
+          <div class="weather-icon">${w.icon}</div>
+          <div class="weather-city">${lang === 'hi' ? w.cityHi : w.city}</div>
+          <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:0.8rem;">${w.country}</div>
+          <div class="weather-temp">${w.temp}°C</div>
+          <div class="weather-desc">${lang === 'hi' ? w.condHi : w.condition}</div>
+          <div style="display:flex;justify-content:center;gap:1.5rem;margin-top:1rem;font-size:0.8rem;color:var(--text-dim);">
+            <span>💧 ${w.humidity}%</span>
+            <span>💨 ${w.wind} km/h</span>
+          </div>
+          <div style="margin-top:0.8rem;">
+            <span class="tag">${t('weather.bestSeason')}: ${t('weather.' + w.best)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showCityChart(idx) {
+      selectedCity = idx;
+      renderChart();
+      document.querySelectorAll('#city-pills .pill').forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    function renderChart() {
+      const w = weatherData[selectedCity];
+      const maxT = Math.max(...w.temps);
+      const minT = Math.min(...w.temps);
+      const range = maxT - minT || 1;
+      const barsEl = document.getElementById('temp-bars');
+      const labelsEl = document.getElementById('month-labels');
+      barsEl.innerHTML = w.temps.map((t, i) => {
+        const h = ((t - minT) / range) * 150 + 20;
+        const hue = t < 10 ? 210 : t < 20 ? 180 : t < 30 ? 30 : 10;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;">
+          <span style="font-size:0.7rem;font-weight:600;">${t}°</span>
+          <div style="width:100%;height:${h}px;background:hsl(${hue},80%,55%);border-radius:6px 6px 0 0;transition:height 0.5s ease;min-width:20px;"></div>
+        </div>`;
+      }).join('');
+      labelsEl.innerHTML = months.map(m => `<span>${m}</span>`).join('');
+    }
+
+    function renderSeasonRecs() {
+      const el = document.getElementById('season-recs');
+      const seasons = [
+        { season: 'spring', icon: '🌸', cities: 'Kyoto, Bali, Cape Town' },
+        { season: 'summer', icon: '☀️', cities: 'Santorini, Swiss Alps, Reykjavik' },
+        { season: 'autumn', icon: '🍂', cities: 'Kyoto, New York, Paris' },
+        { season: 'winter', icon: '❄️', cities: 'Jaipur, Maldives, Bangkok' }
+      ];
+      el.innerHTML = seasons.map(s => `
+        <div class="card" style="padding:1.5rem;display:flex;align-items:center;gap:1rem;">
+          <div style="font-size:2.5rem;">${s.icon}</div>
+          <div>
+            <h3 data-t="weather.${s.season}">${t('weather.' + s.season)}</h3>
+            <p class="text-dim" style="font-size:0.9rem;">Best for: ${s.cities}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('weather');
+      renderWeather();
+      renderChart();
+      renderSeasonRecs();
+
+      // City pills for chart
+      const cityPills = document.getElementById('city-pills');
+      weatherData.forEach((w, i) => {
+        const pill = document.createElement('button');
+        pill.className = 'pill' + (i === 0 ? ' active' : '');
+        pill.textContent = w.city;
+        pill.onclick = () => showCityChart(i);
+        cityPills.appendChild(pill);
+      });
+
+      // Season filter
+      document.querySelectorAll('[data-season]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('[data-season]').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          renderWeather(pill.dataset.season);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

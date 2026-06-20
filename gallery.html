@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Stunning travel photography gallery from destinations worldwide.">
+  <title>Photo Gallery — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+  <div class="page-header">
+    <h1 data-t="gallery.title">Travel Gallery</h1>
+    <p data-t="gallery.desc">Stunning shots from destinations worldwide</p>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="filter-pills">
+      <button class="pill active" data-gcat="all" data-t="gallery.all">All</button>
+      <button class="pill" data-gcat="nature" data-t="gallery.nature">Nature</button>
+      <button class="pill" data-gcat="cities" data-t="gallery.cities">Cities</button>
+      <button class="pill" data-gcat="beaches" data-t="gallery.beaches">Beaches</button>
+      <button class="pill" data-gcat="mountains" data-t="gallery.mountains">Mountains</button>
+      <button class="pill" data-gcat="temples" data-t="gallery.temples">Temples</button>
+    </div>
+
+    <div class="masonry" id="gallery-masonry"></div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close">✕</button>
+    <button class="lightbox-nav lightbox-prev">←</button>
+    <img src="" alt="Photo">
+    <button class="lightbox-nav lightbox-next">→</button>
+  </div>
+
+  <footer class="footer" id="footer"></footer>
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const photos = [
+      { src:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&h=800&fit=crop', cat:'nature', title:'Bali Rice Terraces' },
+      { src:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=400&fit=crop', cat:'cities', title:'Paris Eiffel Tower' },
+      { src:'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&h=700&fit=crop', cat:'beaches', title:'Maldives Paradise' },
+      { src:'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&h=500&fit=crop', cat:'mountains', title:'Swiss Alps' },
+      { src:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&h=900&fit=crop', cat:'temples', title:'Kyoto Shrine' },
+      { src:'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&h=400&fit=crop', cat:'cities', title:'New York Skyline' },
+      { src:'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&h=600&fit=crop', cat:'beaches', title:'Tropical Beach' },
+      { src:'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&h=700&fit=crop', cat:'nature', title:'Cape Town' },
+      { src:'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=600&h=500&fit=crop', cat:'cities', title:'Santorini' },
+      { src:'https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=600&h=400&fit=crop', cat:'nature', title:'Northern Lights' },
+      { src:'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600&h=800&fit=crop', cat:'temples', title:'Jaipur Fort' },
+      { src:'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=600&h=450&fit=crop', cat:'cities', title:'Sydney Opera' },
+      { src:'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&h=750&fit=crop', cat:'mountains', title:'Machu Picchu' },
+      { src:'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&h=500&fit=crop', cat:'cities', title:'Bangkok Temple' },
+      { src:'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&h=600&fit=crop', cat:'nature', title:'African Safari' },
+      { src:'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600&h=700&fit=crop', cat:'temples', title:'Varanasi Ghats' }
+    ];
+
+    let filteredPhotos = [...photos];
+
+    function renderGallery(cat = 'all') {
+      filteredPhotos = cat === 'all' ? [...photos] : photos.filter(p => p.cat === cat);
+      const m = document.getElementById('gallery-masonry');
+      m.innerHTML = filteredPhotos.map((p, i) => `
+        <div class="masonry-item" data-index="${i}">
+          <img src="${p.src}" alt="${p.title}" loading="lazy">
+          <div class="overlay">
+            <div style="text-align:center;">
+              <div style="font-size:1.5rem;margin-bottom:0.5rem;">🔍</div>
+              <div style="font-weight:600;">${p.title}</div>
+              <div class="tag" style="margin-top:0.3rem;">${p.cat}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      initLightboxLocal();
+    }
+
+    function initLightboxLocal() {
+      const lb = document.getElementById('lightbox');
+      const img = lb.querySelector('img');
+      const items = document.querySelectorAll('.masonry-item');
+      let current = 0;
+
+      items.forEach((item, i) => {
+        item.addEventListener('click', () => {
+          current = i;
+          img.src = filteredPhotos[i].src;
+          lb.classList.add('open');
+        });
+      });
+
+      lb.querySelector('.lightbox-close').onclick = () => lb.classList.remove('open');
+      lb.querySelector('.lightbox-prev').onclick = () => {
+        current = (current - 1 + filteredPhotos.length) % filteredPhotos.length;
+        img.src = filteredPhotos[current].src;
+      };
+      lb.querySelector('.lightbox-next').onclick = () => {
+        current = (current + 1) % filteredPhotos.length;
+        img.src = filteredPhotos[current].src;
+      };
+      lb.onclick = (e) => { if (e.target === lb) lb.classList.remove('open'); };
+
+      document.onkeydown = (e) => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') lb.classList.remove('open');
+        if (e.key === 'ArrowLeft') lb.querySelector('.lightbox-prev').click();
+        if (e.key === 'ArrowRight') lb.querySelector('.lightbox-next').click();
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('gallery');
+      renderGallery();
+      document.querySelectorAll('[data-gcat]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('[data-gcat]').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          renderGallery(pill.dataset.gcat);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

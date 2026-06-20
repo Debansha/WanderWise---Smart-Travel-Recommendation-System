@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore breathtaking destinations worldwide. Filter by continent, budget, and activity type.">
+  <title>Destinations — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="page-header">
+    <h1 data-t="dest.title">Explore Destinations</h1>
+    <p data-t="dest.desc">Discover breathtaking places across the globe tailored to your travel style</p>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <div class="search-bar">
+      <input type="text" id="dest-search" data-t="dest.searchPlaceholder" placeholder="Search destinations..." oninput="filterDest()">
+      <button data-t="dest.search">Search</button>
+    </div>
+
+    <div class="filter-pills" id="filter-pills">
+      <button class="pill active" data-filter="all" data-t="dest.all">All</button>
+      <button class="pill" data-filter="asia" data-t="dest.asia">Asia</button>
+      <button class="pill" data-filter="europe" data-t="dest.europe">Europe</button>
+      <button class="pill" data-filter="americas" data-t="dest.americas">Americas</button>
+      <button class="pill" data-filter="africa" data-t="dest.africa">Africa</button>
+      <button class="pill" data-filter="oceania" data-t="dest.oceania">Oceania</button>
+      <button class="pill" data-filter="budget" data-t="dest.budget">Budget</button>
+      <button class="pill" data-filter="luxury" data-t="dest.luxury">Luxury</button>
+      <button class="pill" data-filter="adventure" data-t="dest.adventure">Adventure</button>
+    </div>
+
+    <div class="grid-3" id="dest-grid"></div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const allDest = [
+      { name:'Bali, Indonesia', nameHi:'बाली, इंडोनेशिया', region:'asia', tags:['budget','adventure'], img:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&h=350&fit=crop', price:'$800', rating:'4.8', bestTime:'Apr-Oct', desc:'Tropical paradise with temples, rice terraces, and stunning beaches.', descHi:'मंदिरों, चावल की छतों और शानदार समुद्र तटों के साथ उष्णकटिबंधीय स्वर्ग।' },
+      { name:'Santorini, Greece', nameHi:'सेंटोरिनी, ग्रीस', region:'europe', tags:['luxury'], img:'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=500&h=350&fit=crop', price:'$1200', rating:'4.9', bestTime:'Jun-Sep', desc:'Iconic white-washed buildings with breathtaking sunset views.', descHi:'लुभावने सूर्यास्त दृश्यों के साथ प्रतिष्ठित सफेद इमारतें।' },
+      { name:'Kyoto, Japan', nameHi:'क्योटो, जापान', region:'asia', tags:['budget'], img:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=500&h=350&fit=crop', price:'$1000', rating:'4.9', bestTime:'Mar-May', desc:'Ancient temples, cherry blossoms, and traditional tea ceremonies.', descHi:'प्राचीन मंदिर, चेरी ब्लॉसम और पारंपरिक चाय समारोह।' },
+      { name:'Jaipur, India', nameHi:'जयपुर, भारत', region:'asia', tags:['budget'], img:'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=500&h=350&fit=crop', price:'$400', rating:'4.7', bestTime:'Oct-Mar', desc:'The Pink City with magnificent forts and vibrant bazaars.', descHi:'शानदार किलों और जीवंत बाज़ारों वाला गुलाबी शहर।' },
+      { name:'Swiss Alps', nameHi:'स्विस आल्प्स', region:'europe', tags:['adventure','luxury'], img:'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=500&h=350&fit=crop', price:'$1500', rating:'4.9', bestTime:'Jun-Sep', desc:'Majestic mountain landscapes perfect for skiing and hiking.', descHi:'स्कीइंग और हाइकिंग के लिए उपयुक्त राजसी पर्वत परिदृश्य।' },
+      { name:'Maldives', nameHi:'मालदीव', region:'asia', tags:['luxury'], img:'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=500&h=350&fit=crop', price:'$2000', rating:'4.9', bestTime:'Nov-Apr', desc:'Crystal clear waters with luxury overwater villas.', descHi:'लक्ज़री ओवरवॉटर विला के साथ क्रिस्टल क्लियर पानी।' },
+      { name:'Machu Picchu, Peru', nameHi:'माचू पिच्चू, पेरू', region:'americas', tags:['adventure'], img:'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=500&h=350&fit=crop', price:'$900', rating:'4.8', bestTime:'Apr-Oct', desc:'Ancient Incan citadel set high in the Andes Mountains.', descHi:'एंडीज़ पर्वतमाला में ऊँचाई पर स्थित प्राचीन इंकन गढ़।' },
+      { name:'Cape Town, South Africa', nameHi:'केप टाउन, दक्षिण अफ्रीका', region:'africa', tags:['adventure','budget'], img:'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=500&h=350&fit=crop', price:'$700', rating:'4.7', bestTime:'Oct-Mar', desc:'Table Mountain, stunning coastline, and vibrant culture.', descHi:'टेबल माउंटेन, शानदार तटरेखा और जीवंत संस्कृति।' },
+      { name:'Sydney, Australia', nameHi:'सिडनी, ऑस्ट्रेलिया', region:'oceania', tags:['luxury'], img:'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=500&h=350&fit=crop', price:'$1300', rating:'4.8', bestTime:'Sep-Nov', desc:'Opera House, Harbour Bridge, and beautiful beaches.', descHi:'ओपेरा हाउस, हार्बर ब्रिज और सुंदर समुद्र तट।' },
+      { name:'Paris, France', nameHi:'पेरिस, फ्रांस', region:'europe', tags:['luxury'], img:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&h=350&fit=crop', price:'$1100', rating:'4.8', bestTime:'Apr-Jun', desc:'City of Love with world-class art, food, and architecture.', descHi:'विश्व स्तरीय कला, भोजन और वास्तुकला के साथ प्रेम का शहर।' },
+      { name:'Varanasi, India', nameHi:'वाराणसी, भारत', region:'asia', tags:['budget'], img:'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=500&h=350&fit=crop', price:'$300', rating:'4.6', bestTime:'Oct-Mar', desc:'Sacred city on the Ganges with ancient ghats and temples.', descHi:'प्राचीन घाटों और मंदिरों के साथ गंगा पर पवित्र शहर।' },
+      { name:'New York, USA', nameHi:'न्यूयॉर्क, अमेरिका', region:'americas', tags:['luxury'], img:'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=500&h=350&fit=crop', price:'$1400', rating:'4.7', bestTime:'Apr-Jun', desc:'The city that never sleeps — Broadway, Central Park, and more.', descHi:'कभी न सोने वाला शहर — ब्रॉडवे, सेंट्रल पार्क और बहुत कुछ।' }
+    ];
+
+    let activeFilter = 'all';
+
+    function renderDest(filtered) {
+      const grid = document.getElementById('dest-grid');
+      const lang = document.documentElement.getAttribute('data-lang') || 'en';
+      grid.innerHTML = filtered.map(d => `
+        <div class="dest-card reveal visible">
+          <img src="${d.img}" alt="${d.name}" loading="lazy">
+          <div class="dest-card-badge">⭐ ${d.rating}</div>
+          <div class="dest-card-overlay">
+            <h3>${lang === 'hi' ? d.nameHi : d.name}</h3>
+            <p style="margin-bottom:0.3rem;">${lang === 'hi' ? d.descHi : d.desc}</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+              <span class="tag">${t('dest.bestTime')}: ${d.bestTime}</span>
+              <span style="font-weight:700;color:var(--accent-gold);">${t('dest.from')} ${d.price}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterDest() {
+      const search = document.getElementById('dest-search').value.toLowerCase();
+      let filtered = allDest;
+      if (activeFilter !== 'all') {
+        filtered = filtered.filter(d => d.region === activeFilter || d.tags.includes(activeFilter));
+      }
+      if (search) {
+        filtered = filtered.filter(d => d.name.toLowerCase().includes(search) || d.nameHi.includes(search));
+      }
+      renderDest(filtered);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('destinations');
+      renderDest(allDest);
+
+      document.querySelectorAll('#filter-pills .pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('#filter-pills .pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          activeFilter = pill.dataset.filter;
+          filterDest();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

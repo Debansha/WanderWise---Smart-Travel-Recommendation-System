@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Travel stories, guides, and inspiration from globetrotters worldwide.">
+  <title>Travel Blog — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+  <div class="page-header">
+    <h1 data-t="blog.title">Travel Stories</h1>
+    <p data-t="blog.desc">Inspiring stories and guides from travelers around the world</p>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <!-- Featured Article -->
+    <div class="card reveal" style="display:flex;overflow:hidden;margin-bottom:2rem;padding:0;cursor:pointer;" id="featured-article">
+      <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&h=400&fit=crop" alt="Featured" style="width:50%;object-fit:cover;min-height:300px;">
+      <div style="padding:2.5rem;flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <span class="tag" style="margin-bottom:1rem;width:fit-content;" data-t="blog.featured">Featured</span>
+        <h2 style="font-family:var(--font-heading);font-size:1.6rem;font-weight:800;margin-bottom:0.8rem;">10 Hidden Beaches You Must Visit Before They Go Viral</h2>
+        <p class="text-dim" style="line-height:1.8;margin-bottom:1.5rem;">Discover secret beaches from Southeast Asia to South America that are still untouched by mass tourism. From the bioluminescent shores of the Maldives to the pink sands of Indonesia...</p>
+        <div style="display:flex;gap:1.5rem;align-items:center;">
+          <div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(var(--primary),var(--accent-cyan));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;">SK</div><span style="font-size:0.85rem;">Sarah Kim</span></div>
+          <span class="text-dim" style="font-size:0.8rem;">📅 Mar 15, 2026</span>
+          <span class="text-dim" style="font-size:0.8rem;">⏱️ 8 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-pills" style="margin-bottom:2rem;">
+      <button class="pill active" data-cat="all" data-t="dest.all">All</button>
+      <button class="pill" data-cat="guides">Guides</button>
+      <button class="pill" data-cat="stories">Stories</button>
+      <button class="pill" data-cat="food">Food</button>
+      <button class="pill" data-cat="adventure">Adventure</button>
+      <button class="pill" data-cat="budget">Budget</button>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="grid-3" id="blog-grid"></div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const blogs = [
+      { title:'How to Travel Japan on $50/Day', titleHi:'$50/दिन में जापान कैसे घूमें', cat:'budget', img:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=250&fit=crop', author:'Mike Chen', date:'Mar 12, 2026', time:'6', excerpt:'Japan doesn\'t have to break the bank. Here\'s our complete guide to budget travel in the Land of the Rising Sun.' },
+      { title:'A Food Lover\'s Guide to Bangkok', titleHi:'बैंकॉक खाना प्रेमी गाइड', cat:'food', img:'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=250&fit=crop', author:'Priya Sharma', date:'Mar 10, 2026', time:'5', excerpt:'From street-side pad thai to Michelin-starred restaurants, Bangkok is a foodie paradise.' },
+      { title:'Trekking the Inca Trail: A Complete Guide', titleHi:'इंका ट्रेल ट्रैकिंग: पूर्ण गाइड', cat:'adventure', img:'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=400&h=250&fit=crop', author:'David Lopez', date:'Mar 8, 2026', time:'10', excerpt:'Everything you need to know about hiking to Machu Picchu — permits, packing, and altitude tips.' },
+      { title:'Living in Bali for a Month Under $1000', titleHi:'$1000 से कम में बाली में एक महीना', cat:'budget', img:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&h=250&fit=crop', author:'Emma W.', date:'Mar 5, 2026', time:'7', excerpt:'A digital nomad\'s guide to living the dream in Bali without emptying your savings.' },
+      { title:'The Most Instagrammable Spots in Santorini', titleHi:'सेंटोरिनी की सबसे इंस्टाग्रामेबल जगहें', cat:'guides', img:'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=400&h=250&fit=crop', author:'Lisa M.', date:'Mar 3, 2026', time:'4', excerpt:'Get perfect shots at these iconic locations — with tips to avoid the crowds.' },
+      { title:'My Solo Journey Through Rajasthan', titleHi:'राजस्थान में मेरी अकेली यात्रा', cat:'stories', img:'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=400&h=250&fit=crop', author:'Amit K.', date:'Feb 28, 2026', time:'9', excerpt:'Two weeks, five cities, countless memories — my transformative solo trip across the land of kings.' },
+      { title:'Northern Lights: Best Places & Times', titleHi:'उत्तरी रोशनी: सर्वश्रेष्ठ स्थान और समय', cat:'guides', img:'https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=400&h=250&fit=crop', author:'Anna S.', date:'Feb 25, 2026', time:'6', excerpt:'Chase the aurora from Iceland to Norway — the ultimate guide to witnessing nature\'s light show.' },
+      { title:'Street Food Safari: Delhi to Mumbai', titleHi:'स्ट्रीट फूड सफारी: दिल्ली से मुंबई', cat:'food', img:'https://images.unsplash.com/photo-1567337710282-00832b415979?w=400&h=250&fit=crop', author:'Rahul G.', date:'Feb 22, 2026', time:'5', excerpt:'A culinary road trip through India\'s most legendary street food cities.' },
+      { title:'Swimming with Whale Sharks in Maldives', titleHi:'मालदीव में व्हेल शार्क के साथ तैराकी', cat:'adventure', img:'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&h=250&fit=crop', author:'James B.', date:'Feb 18, 2026', time:'5', excerpt:'An unforgettable encounter with the gentle giants of the Indian Ocean.' }
+    ];
+
+    function renderBlogs(cat = 'all') {
+      const lang = document.documentElement.getAttribute('data-lang') || 'en';
+      const filtered = cat === 'all' ? blogs : blogs.filter(b => b.cat === cat);
+      document.getElementById('blog-grid').innerHTML = filtered.map(b => `
+        <div class="blog-card reveal visible" style="cursor:pointer;">
+          <img src="${b.img}" alt="${b.title}" loading="lazy">
+          <div class="blog-card-body">
+            <div class="blog-card-meta">
+              <span>📅 ${b.date}</span>
+              <span>⏱️ ${b.time} ${t('blog.minRead')}</span>
+              <span class="tag">${b.cat}</span>
+            </div>
+            <h3>${lang === 'hi' ? b.titleHi : b.title}</h3>
+            <p class="mt-1">${b.excerpt}</p>
+            <a href="#" style="color:var(--primary);text-decoration:none;font-weight:600;display:inline-block;margin-top:0.8rem;font-size:0.9rem;" data-t="blog.readMore">${t('blog.readMore')}</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('blog');
+      renderBlogs();
+      document.querySelectorAll('[data-cat]').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('[data-cat]').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          renderBlogs(pill.dataset.cat);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

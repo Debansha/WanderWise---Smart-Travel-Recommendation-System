@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Essential travel tips, packing checklists, safety guides, and travel hacks.">
+  <title>Travel Tips — WanderWise</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar"></nav>
+  <div class="page-header">
+    <h1 data-t="tips.title">Travel Tips & Hacks</h1>
+    <p data-t="tips.desc">Expert tips to make your journey smoother and smarter</p>
+  </div>
+
+  <section class="section" style="padding-top:0;">
+    <!-- Tabs -->
+    <div class="tabs" id="tips-tabs">
+      <button class="tab-btn active" data-tab="tab-packing" data-t="tips.packingList">Packing Checklist</button>
+      <button class="tab-btn" data-tab="tab-safety" data-t="tips.safetyTips">Safety Tips</button>
+      <button class="tab-btn" data-tab="tab-hacks" data-t="tips.travelHacks">Travel Hacks</button>
+    </div>
+
+    <!-- Packing Checklist -->
+    <div class="tab-panel active" id="tab-packing">
+      <div class="grid-2">
+        <!-- Essentials -->
+        <div class="card" style="padding:1.5rem;">
+          <h3 style="margin-bottom:1rem;">📦 <span data-t="tips.essentials">Essentials</span></h3>
+          <div id="checklist-essentials">
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Passport & Visa</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Travel Insurance documents</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Flight tickets & Hotel bookings</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Cash & Credit/Debit cards</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Medications & First-aid kit</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Copies of important documents</span></div>
+          </div>
+        </div>
+        <!-- Clothing -->
+        <div class="card" style="padding:1.5rem;">
+          <h3 style="margin-bottom:1rem;">👕 <span data-t="tips.clothing">Clothing</span></h3>
+          <div id="checklist-clothing">
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Comfortable walking shoes</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Weather-appropriate outerwear</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Lightweight quick-dry clothes</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Swimwear</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Sleepwear</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Modest clothing (for temples)</span></div>
+          </div>
+        </div>
+        <!-- Electronics -->
+        <div class="card" style="padding:1.5rem;">
+          <h3 style="margin-bottom:1rem;">📱 <span data-t="tips.electronics">Electronics</span></h3>
+          <div id="checklist-electronics">
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Phone & charger</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Power bank (20000mAh+)</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Universal power adapter</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Camera & memory cards</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Earphones/Headphones</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>E-reader or tablet</span></div>
+          </div>
+        </div>
+        <!-- Toiletries -->
+        <div class="card" style="padding:1.5rem;">
+          <h3 style="margin-bottom:1rem;">🧴 <span data-t="tips.toiletries">Toiletries</span></h3>
+          <div id="checklist-toiletries">
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Sunscreen (SPF 50+)</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Insect repellent</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Toothbrush & toothpaste</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Shampoo & body wash (travel size)</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Hand sanitizer & wet wipes</span></div>
+            <div class="checklist-item" onclick="toggleCheck(this)"><div class="checkbox">✓</div><span>Tissues & face masks</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:1.5rem;">
+        <div id="packing-progress" style="font-family:var(--font-heading);font-size:1.2rem;font-weight:700;color:var(--primary);margin-bottom:0.5rem;">0/24 packed</div>
+        <div style="max-width:400px;margin:0 auto;height:8px;background:var(--glass);border-radius:4px;overflow:hidden;">
+          <div id="packing-bar" style="width:0%;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent-emerald));border-radius:4px;transition:width 0.4s ease;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety Tips -->
+    <div class="tab-panel" id="tab-safety">
+      <div class="grid-2">
+        <div class="card" style="padding:2rem;">
+          <h3 style="margin-bottom:1.5rem;">🛡️ General Safety</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.8rem;">
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-emerald);">
+              <strong>Keep copies of documents</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Store digital copies in cloud storage and carry physical photocopies separately from originals</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-cyan);">
+              <strong>Share your itinerary</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Always share your travel plans with a trusted family member or friend</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);">
+              <strong>Get travel insurance</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Never travel without comprehensive travel and medical insurance</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--primary);">
+              <strong>Register with your embassy</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Register your trip with your country's embassy at your destination</p>
+            </li>
+          </ul>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <h3 style="margin-bottom:1.5rem;">🏥 Health & Wellness</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.8rem;">
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-emerald);">
+              <strong>Check vaccination requirements</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Some countries require specific vaccinations — check 6-8 weeks before travel</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-cyan);">
+              <strong>Stay hydrated</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Carry a reusable water bottle. In some countries, only drink bottled or filtered water</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);">
+              <strong>Pack a first-aid kit</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Include band-aids, antiseptic, pain relievers, anti-diarrhea medicine, and any prescription meds</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--primary);">
+              <strong>Sun protection</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Apply SPF 50+ sunscreen every 2 hours, wear hats, and stay in shade during peak hours</p>
+            </li>
+          </ul>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <h3 style="margin-bottom:1.5rem;">💳 Money Safety</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.8rem;">
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);">
+              <strong>Use money belts</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Keep valuables hidden in a money belt under your clothes</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-emerald);">
+              <strong>Notify your bank</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Tell your bank about your travel plans to avoid card blocks</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--primary);">
+              <strong>Carry multiple payment methods</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Cash, debit card, credit card — never rely on just one</p>
+            </li>
+          </ul>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <h3 style="margin-bottom:1.5rem;">🎒 On-the-Go Safety</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.8rem;">
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-cyan);">
+              <strong>Keep bags close</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Use anti-theft backpacks and keep your bag in front in crowded areas</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--accent-gold);">
+              <strong>Be aware of scams</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Research common tourist scams at your destination beforehand</p>
+            </li>
+            <li style="padding:0.8rem;background:var(--glass);border-radius:var(--radius-sm);border-left:3px solid var(--primary);">
+              <strong>Save offline maps</strong>
+              <p class="text-dim" style="font-size:0.85rem;margin-top:0.3rem;">Download Google Maps offline before your trip in case of no internet</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Travel Hacks -->
+    <div class="tab-panel" id="tab-hacks">
+      <div class="grid-3">
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">🎫</div>
+          <h3 style="margin-bottom:0.5rem;">Incognito Flights</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Search flights in incognito mode — airlines raise prices when they see repeated searches!</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">📧</div>
+          <h3 style="margin-bottom:0.5rem;">Price Alerts</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Set up Google Flights price alerts to get notified when fares drop.</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">🧊</div>
+          <h3 style="margin-bottom:0.5rem;">Freeze Water Bottles</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Freeze half-full water bottles the night before — cold water all day long!</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">📸</div>
+          <h3 style="margin-bottom:0.5rem;">Photo of Hotel</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Take a photo of your hotel's business card or address — show it to taxi drivers!</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">👟</div>
+          <h3 style="margin-bottom:0.5rem;">Shower Cap Shoes</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Put dirty shoes in shower caps to keep your suitcase clean.</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">🔌</div>
+          <h3 style="margin-bottom:0.5rem;">Binder Clip Charger</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Use binder clips to organize charging cables and prevent them from tangling.</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">🗺️</div>
+          <h3 style="margin-bottom:0.5rem;">Free Walking Tours</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Most cities offer free walking tours — tip-based, so pay what you think it's worth!</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">🏨</div>
+          <h3 style="margin-bottom:0.5rem;">Late Check-out</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Always ask for late check-out — it's free 70% of the time!</p>
+        </div>
+        <div class="card" style="padding:1.5rem;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">⚖️</div>
+          <h3 style="margin-bottom:0.5rem;">Roll, Don't Fold</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Rolling clothes saves 30% more space than folding and prevents wrinkles!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" id="footer"></footer>
+  <script src="js/translations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    function toggleCheck(el) {
+      el.classList.toggle('checked');
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const total = document.querySelectorAll('#tab-packing .checklist-item').length;
+      const checked = document.querySelectorAll('#tab-packing .checklist-item.checked').length;
+      document.getElementById('packing-progress').textContent = `${checked}/${total} packed`;
+      document.getElementById('packing-bar').style.width = `${(checked / total) * 100}%`;
+      if (checked === total) showToast('All Packed! 🎉', 'You\'re ready for your adventure!');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initPage('tips');
+      // Tab switching
+      document.querySelectorAll('#tips-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#tips-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
